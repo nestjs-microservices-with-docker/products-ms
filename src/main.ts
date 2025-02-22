@@ -1,14 +1,14 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { ValidationPipe } from '@nestjs/common';
+import { Logger, ValidationPipe } from '@nestjs/common';
 import { envs } from './config';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 
 async function bootstrap() {
+  const logger = new Logger('Product Microservice')
   const app = await NestFactory.createMicroservice<MicroserviceOptions>(AppModule, {
     transport: Transport.TCP,
     options: {
-      host: '127.0.0.1',
       port: envs.port
     }
   });
@@ -18,5 +18,7 @@ async function bootstrap() {
       forbidNonWhitelisted: true
     })
   )
+  app.listen()
+  logger.log(`Product Microservice running on port ${envs.port}`)
 }
 bootstrap();
